@@ -29,6 +29,7 @@ bin_PROGRAMS = \
 jtag_SOURCES = \
 	jtag.c
 
+
 jtag_LDADD = \
 	$(top_builddir)/src/liburjtag.la \
 	@LIBINTL@
@@ -37,3 +38,11 @@ localedir = $(datadir)/locale
 AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\"
 
 AM_CFLAGS = $(WARNINGCFLAGS)
+
+if ENABLE_LUA_REPL
+jtag_SOURCES += repl.c
+AM_CPPFLAGS += -DHAVE_LUA_REPL
+AM_CFLAGS += $(LUA_REPL_CFLAGS)
+jtag_LDADD += $(LUA_REPL_LIBS)
+
+endif

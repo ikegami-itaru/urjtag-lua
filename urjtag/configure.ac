@@ -112,6 +112,12 @@ AC_PROG_YACC
 AC_PROG_CC_C99
 PKG_PROG_PKG_CONFIG
 
+if test "x$PKG_CONFIG_PATH" = "x"
+then
+   export PKG_CONFIG_PATH="$prefix/lib/pkgconfig"
+else
+   export PKG_CONFIG_PATH="$prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
+fi
 
 AC_SEARCH_LIBS([ioperm], [ioperm])
 if test "$ac_cv_search_ioperm" != "no"; then
@@ -383,6 +389,17 @@ AS_IF([test "x$enable_apps" = xyes], [
   AC_DEFINE(ENABLE_APPS, 1, [define if you want to build the jtag and bsdl2jtag main programs])
 ],[
   AM_CONDITIONAL(ENABLE_APPS, false)
+])
+
+AC_ARG_ENABLE([lua],[
+  AS_HELP_STRING([--enable-lua], [use LUA repl for jtag])],,[enable_lua=yes])
+
+AS_IF([test "x$enable_lua" = xyes], [
+  AM_CONDITIONAL(ENABLE_LUA_REPL, true)
+  AC_DEFINE(ENABLE_LUA_REPL, 1, [define if you want to build jtag with LUA repl])
+  PKG_CHECK_MODULES(LUA_REPL, luaprompt, [HAVE_LUA_REPL=true])
+],[
+  AM_CONDITIONAL(ENABLE_LUA_REPL, false)
 ])
 
 AC_ARG_ENABLE([python],

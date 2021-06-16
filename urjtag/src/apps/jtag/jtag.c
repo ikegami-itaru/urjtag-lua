@@ -54,6 +54,10 @@
 #include <urjtag/parse.h>
 #include <urjtag/jtag.h>
 
+#ifdef ENABLE_LUA_REPL
+extern int jtag_lua_repl(urj_chain_t *);
+#endif
+
 static int urj_interactive = 0;
 
 #define JTAGDIR         ".jtag"
@@ -574,6 +578,9 @@ main (int argc, char *const argv[])
     rl_completion_entry_function = urj_cmd_completion;
 #endif
 
+#ifdef HAVE_LUA_REPL
+    jtag_lua_repl(chain);
+#else
     if (go)
     {
         /* Load history */
@@ -585,6 +592,7 @@ main (int argc, char *const argv[])
         /* Save history */
         jtag_save_history ();
     }
+#endif
 
     cleanup (chain);
 

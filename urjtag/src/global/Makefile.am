@@ -33,4 +33,8 @@ libglobal_la_SOURCES = \
 
 AM_CPPFLAGS = -DJTAG_BIN_DIR=\"$(bindir)\" -DJTAG_DATA_DIR=\"$(pkgdatadir)\"
 
+if ENABLE_LUA_REPL
+AM_CPPFLAGS += -DHAVE_LUA_REPL
+endif
+
 AM_CFLAGS = $(WARNINGCFLAGS)

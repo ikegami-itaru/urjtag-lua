@@ -31,6 +31,7 @@
 #include <urjtag/log.h>
 #include <urjtag/error.h>
 #include <urjtag/jtag.h>
+#include <urjtag/repl.h>
 
 urj_error_state_t urj_error_state;
 
@@ -44,20 +45,65 @@ urj_log_state_t urj_log_state =
         .err_vprintf = stderr_vprintf,
     };
 
+#ifdef HAVE_LUA_REPL
+repl_private repl_priv =
+    {
+    	.chain = NULL,
+	.urj_status = URJ_STATUS_OK,
+	.message = NULL,
+	.message_cur = NULL,
+	.error_message = NULL,
+	.error_message_cur = NULL,
+    };
+#endif
+
+
 static int
 stderr_vprintf(const char *fmt, va_list ap)
 {
+#ifdef HAVE_LUA_REPL
+    char *msg = urj_repl_error_message();
+
+    if (msg == NULL) {
+	return vfprintf (stderr, fmt, ap);
+    }
+    int length = vsnprintf (msg, URJ_MAX_MESSAGE_SIZE - 1, fmt, ap);
+    urj_repl_error_message_inc(length);
+    if (is_urj_repl_error_message_in_range()) {
+	urj_tracate_error_message();
+    }
+    
+    return length;
+#else
     return vfprintf (stderr, fmt, ap);
+#endif
 }
 
 static int
 stdout_vprintf(const char *fmt, va_list ap)
 {
+#ifdef HAVE_LUA_REPL
+    char *msg = urj_repl_message();
+
+    if (msg == NULL) {
+	int r = vfprintf (stdout, fmt, ap);
+	fflush (stdout);
+	return r;
+    }
+    int length = vsnprintf (msg, URJ_MAX_MESSAGE_SIZE - 1, fmt, ap);
+    urj_repl_message_inc(length);
+    if (is_urj_repl_message_in_range()) {
+	urj_tracate_message();
+    }
+    
+    return length;
+#else
     int r = vfprintf (stdout, fmt, ap);
 
     fflush (stdout);
 
     return r;
+#endif
 }
 
 static int

@@ -96,3 +96,7 @@ localedir = $(datadir)/locale
 AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\"
 
 AM_CFLAGS = $(WARNINGCFLAGS)
+
+if ENABLE_LUA_REPL
+AM_CFLAGS += -DHAVE_LUA_REPL
+endif
