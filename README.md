@@ -4,19 +4,20 @@ Urjta-lua is the fork of the urjtag, adding lua repl for urjtag command line pro
 
 ## build
 It may difficult if your environment does not have pkg-config.  
+1. Get some package to build urjtag. For instance, Ubuntu or debian, 
+`apt-get install -y build-essential bison flex autoconf automake autotools-dev git libusb-1.0-0 libusb-1.0-0-dev readline-common libreadline7 libreadline-dev autopoint libftdi1 libftdi1-dev python3-dev`  
 1. Install lua5.3 ( or later) and lua5.3 development package.
-1. Get lua-prompt from https://github.com/ikegami-itaru/urjtag-lua.git and build.  
-  - Lua-prompt is fork from https://github.com/ikegami-itaru/urjtag-lua.git with memory leak patch https://github.com/nefelim/luaprompt/commit/3079b72a350638159006483a4c154b3a628c9c32
- adding luaprompt.pc for pkg-config.  
+1. Get lua-prompt from https://github.com/ikegami-itaru/luaprompt and build.  
+  - Lua-prompt is fork from https://github.com/dpapavas/luaprompt with memory leak patch https://github.com/nefelim/luaprompt/commit/3079b72a350638159006483a4c154b3a628c9c32 adding luaprompt.pc for pkg-config.  
 1. Install lua-prompt.  
 1. Get source for urjtag-lua.  
-1. Get some package to build urjtag. For Ubuntu, I use
-`apt-get install -y build-essential bison flex autoconf automake autotools-dev git libusb-1.0-0 libusb-1.0-0-dev readline-common libreadline7 libreadline-dev autopoint libftdi1 libftdi1-dev python3-dev`  
-execute autogen.sh 
+1. execute autogen.sh 
 1. `./configure --enable-lua`  with your favorite option.  
-
+  - --enable-readline is not need because readline is already linked with lua.
+  
+  
 ## environment
-If you want to colourize repl, set environment variable `URJTAG_LUA_COLOR=1`  
+If you want to colorize repl, set environment variable `URJTAG_LUA_COLOR=1`  
 
 ## lua commands for urjtag
 ### urj_init()
@@ -37,3 +38,8 @@ urj() has two argument, one is the resource for urjtag and another is the urjtag
 `msg` is the message that original urjtag outputs into `stdout`.  
 `err_msg` is the message that original urjtag outputs into `stderr`.
 
+
+## TODO
+- test if urjtag multi-statement work.
+- cleanup code.
+- test for other platform.
